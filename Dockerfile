@@ -5,8 +5,7 @@ WORKDIR /usr/local/go/src/mili
 
 RUN CGO_ENBLED=0 GOOS=linux GOARCH=amd64 go build -o api_server
 
-FROM alpine:3.7
-
+FROM alpine:3.9
 ENV REDIS_ADDR=""
 ENV REDIS_PW=""
 ENV REDIS_DB=""
@@ -19,7 +18,7 @@ RUN echo "https://mirrors.aliyun.com/alpine/v3.9/main/" > /etc/apk/repositories 
     # 安装依赖包
     && apk update \
     apk add ca-certificates && \
-    ecjp "hosts: file dns" > /etc/nsswitch.conf && \
+    echo "hosts: file dns" > /etc/nsswitch.conf && \
     mkdir -p /www/conf
 
 WORKDIR /www
