@@ -28,14 +28,26 @@ func NewRouter() *gin.Engine {
 		// 用户登录
 		v1.POST("user/login", api.UserLogin)
 
+		// 投稿
+		v1.POST("video", api.SubmitVideo)
+		v1.GET("video/:id", api.ShowVideo)
+		v1.GET("videos", api.ListVideo)
+		v1.PUT("video/:id", api.UpdateVideo)
+		v1.DELETE("video/:id", api.DeleteVideo)
+
 		// 需要登录保护的
-		auth := v1.Group("")
+		auth := v1.Group("/")
 		auth.Use(middleware.AuthRequired())
 		{
 			// User Routing
 			auth.GET("user/me", api.UserMe)
 			auth.DELETE("user/logout", api.UserLogout)
 		}
+
 	}
+
+	r.StaticFile("/swagger.json", "./swagger/swagger.json")
+	r.Static("/swagger", "./swagger/dist")
+
 	return r
 }
