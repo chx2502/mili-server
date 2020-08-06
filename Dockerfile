@@ -1,11 +1,14 @@
 FROM golang as build
 
-ADD . /usr/local/go/src/mili
-WORKDIR /usr/local/go/src/mili
+ENV GOPROXY=https://goproxy.io
 
-RUN CGO_ENBLED=0 GOOS=linux GOARCH=amd64 go build -o api_server
+ADD . /mili_server
+WORKDIR /mili_server
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o api_server
 
 FROM alpine:3.9
+
 ENV REDIS_ADDR=""
 ENV REDIS_PW=""
 ENV REDIS_DB=""
@@ -14,16 +17,15 @@ ENV GIN_MODE="release"
 ENV PORT=3000
 
 # 设置alpine的镜像地址为阿里云的地址
-RUN echo "https://mirrors.aliyun.com/alpine/v3.9/main/" > /etc/apk/repositories \
-    # 安装依赖包
-    && apk update \
+RUN echo "http://mirrors.aliyun.com/alpine/v3.7/main/" > /etc/apk/repositories && \
+    apk update && \
     apk add ca-certificates && \
-    echo "hosts: file dns" > /etc/nsswitch.conf && \
+    echo "hosts: files dns" > /etc/nsswitch.conf && \
     mkdir -p /www/conf
 
 WORKDIR /www
 
-COPY --from=build /usr/local/go/src/mili/api_server /usr/bin/api_server
+COPY --from=build /mili_server/api_server /usr/bin/api_server
 ADD ./conf /www/conf
 
 RUN chmod +x /usr/bin/api_server
