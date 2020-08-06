@@ -17,7 +17,7 @@ ENV GIN_MODE="release"
 ENV PORT=3000
 
 # 设置alpine的镜像地址为阿里云的地址
-RUN echo "http://mirrors.aliyun.com/alpine/v3.7/main/" > /etc/apk/repositories && \
+RUN echo "http://mirrors.aliyun.com/alpine/v3.9/main/" > /etc/apk/repositories && \
     apk update && \
     apk add ca-certificates && \
     echo "hosts: files dns" > /etc/nsswitch.conf && \
