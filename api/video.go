@@ -2,7 +2,6 @@ package api
 
 import (
 	"singo/service"
-
 	"github.com/gin-gonic/gin"
 )
 
